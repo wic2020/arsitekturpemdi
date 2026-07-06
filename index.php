@@ -255,6 +255,11 @@ $pageContent = ob_get_clean();
     <title><?= e($activeRoute['title']) ?> - <?= e(APP_NAME) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <?php if ($page === 'pemdi-evidence'): ?>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
+    <?php endif; ?>
     <style>
         .sidebar-scroll {
             scrollbar-width: thin;

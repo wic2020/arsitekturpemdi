@@ -368,13 +368,19 @@ $dabJson = array_map(static fn(array $d): array => [
                 </tbody>
             </table>
         </div>
-        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-3 text-sm text-slate-500">
-            <p>Menampilkan <?= $startRow ?>-<?= $endRow ?> dari <?= $totalRows ?> data</p>
-            <div class="flex gap-2">
-                <?php if ($currentPage > 1): ?><a href="<?= e(dal_page_url($currentPage - 1, $search, $perPage)) ?>" class="rounded-md border px-3 py-2">Sebelumnya</a><?php endif; ?>
-                <?php if ($currentPage < $totalPages): ?><a href="<?= e(dal_page_url($currentPage + 1, $search, $perPage)) ?>" class="rounded-md border px-3 py-2">Berikutnya</a><?php endif; ?>
+        <?php if ($totalRows > 0): ?>
+            <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <p class="text-sm text-slate-500">
+                    Data <?= number_format($offset + 1, 0, ',', '.') ?>&ndash;<?= number_format(min($offset + $perPage, $totalRows), 0, ',', '.') ?>
+                    dari <?= number_format($totalRows, 0, ',', '.') ?>
+                </p>
+                <?php render_numbered_pagination(
+                    $currentPage,
+                    $totalPages,
+                    static fn(int $pageNumber): string => dal_page_url($pageNumber, $search, $perPage)
+                ); ?>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -500,8 +506,6 @@ $dabJson = array_map(static fn(array $d): array => [
     document.querySelectorAll('[data-dal-view]').forEach(button => button.addEventListener('click', () => { const record=JSON.parse(button.dataset.record || '{}'); viewModal.querySelectorAll('[data-view-field]').forEach(el => el.textContent=record[el.dataset.viewField] || '—'); open(viewModal); }));
     document.querySelectorAll('[data-dal-delete]').forEach(button => button.addEventListener('click', () => { deleteModal.querySelector('[data-delete-id]').value=button.dataset.id; deleteModal.querySelector('[data-delete-name]').textContent=button.dataset.name; open(deleteModal); }));
     document.querySelectorAll('[data-modal-close]').forEach(button => button.addEventListener('click', () => close(button.closest('[data-modal]'))));
-    modals.forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) close(modal); }));
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') modals.forEach(close); });
     refreshPrograms(posted.id_program || '');
     refreshDabs(posted.id_dab || '');
     <?php if ($openFormModal): ?>fill(posted); formModal.querySelector('[data-dal-action]').value=<?= json_encode($formMode) ?>; formModal.querySelector('[data-dal-form-title]').textContent=<?= json_encode($formMode === 'update' ? 'Edit Data DAL' : 'Tambah Data DAL') ?>; open(formModal);<?php endif; ?>

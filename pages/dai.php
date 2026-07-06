@@ -565,7 +565,19 @@ $endRow = min($offset + $perPage, $totalRows);
                 <td class="p-3"><div class="flex justify-end gap-1.5"><button type="button" class="dai-action" title="Lihat" data-dai-view data-record="<?= e(json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>"><i data-lucide="eye"></i></button><button type="button" class="dai-action border-blue-200 bg-blue-50 text-blue-700" title="Edit" data-dai-edit data-record="<?= e(json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>"><i data-lucide="pencil"></i></button><button type="button" class="dai-action border-red-200 bg-red-50 text-red-700 disabled:opacity-40" title="<?= (int) $row['reference_count'] ? 'Data masih digunakan' : 'Hapus' ?>" data-dai-delete data-id="<?= (int) $row['id'] ?>" data-name="<?= e($row[$config['name']]) ?>" <?= (int) $row['reference_count'] ? 'disabled' : '' ?>><i data-lucide="trash-2"></i></button></div></td>
             </tr>
         <?php endforeach; ?></tbody></table></div>
-        <div class="flex flex-wrap items-center justify-between gap-3 border-t p-4 text-sm text-slate-500"><p>Menampilkan <?= $startRow ?>-<?= $endRow ?> dari <?= $totalRows ?> data</p><div class="flex gap-2"><?php if ($currentPage > 1): ?><a class="rounded-md border px-3 py-2" href="<?= e(dai_page_url($page, $currentPage - 1, $search, $perPage)) ?>">Sebelumnya</a><?php endif; ?><?php if ($currentPage < $totalPages): ?><a class="rounded-md border px-3 py-2" href="<?= e(dai_page_url($page, $currentPage + 1, $search, $perPage)) ?>">Berikutnya</a><?php endif; ?></div></div>
+        <?php if ($totalRows > 0): ?>
+            <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <p class="text-sm text-slate-500">
+                    Data <?= number_format($offset + 1, 0, ',', '.') ?>&ndash;<?= number_format(min($offset + $perPage, $totalRows), 0, ',', '.') ?>
+                    dari <?= number_format($totalRows, 0, ',', '.') ?>
+                </p>
+                <?php render_numbered_pagination(
+                    $currentPage,
+                    $totalPages,
+                    static fn(int $pageNumber): string => dai_page_url($page, $pageNumber, $search, $perPage)
+                ); ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -600,8 +612,6 @@ $endRow = min($offset + $perPage, $totalRows);
     document.querySelectorAll('[data-dai-view]').forEach(button=>button.addEventListener('click',()=>{const record=JSON.parse(button.dataset.record||'{}');view.querySelectorAll('[data-view-field]').forEach(element=>element.textContent=record[element.dataset.viewField]||'—');open(view)}));
     document.querySelectorAll('[data-dai-delete]').forEach(button=>button.addEventListener('click',()=>{del.querySelector('[data-delete-id]').value=button.dataset.id;del.querySelector('[data-delete-name]').textContent=button.dataset.name;open(del)}));
     document.querySelectorAll('[data-modal-close]').forEach(button=>button.addEventListener('click',()=>close(button.closest('[data-modal]'))));
-    modals.forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)close(modal)}));
-    document.addEventListener('keydown',event=>{if(event.key==='Escape')modals.forEach(close)});
     <?php if ($openFormModal): ?>fill(posted);form.querySelector('[data-dai-action]').value=<?= json_encode($formMode) ?>;form.querySelector('[data-dai-title]').textContent=<?= json_encode(($formMode === 'update' ? 'Edit ' : 'Tambah ') . $config['title']) ?>;open(form);<?php endif; ?>
 })();
 </script>

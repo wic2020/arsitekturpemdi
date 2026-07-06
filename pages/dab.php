@@ -428,17 +428,19 @@ $programJson = array_map(static fn (array $program): array => [
             </table>
         </div>
 
-        <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-            <p>Menampilkan <?= $startRow ?>-<?= $endRow ?> dari <?= $totalRows ?> data</p>
-            <div class="flex flex-wrap gap-2">
-                <?php if ($currentPage > 1): ?>
-                    <a href="<?= e(dab_page_url($currentPage - 1, $search, $perPage)) ?>" class="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Sebelumnya</a>
-                <?php endif; ?>
-                <?php if ($currentPage < $totalPages): ?>
-                    <a href="<?= e(dab_page_url($currentPage + 1, $search, $perPage)) ?>" class="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Berikutnya</a>
-                <?php endif; ?>
+        <?php if ($totalRows > 0): ?>
+            <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <p class="text-sm text-slate-500">
+                    Data <?= number_format($offset + 1, 0, ',', '.') ?>&ndash;<?= number_format(min($offset + $perPage, $totalRows), 0, ',', '.') ?>
+                    dari <?= number_format($totalRows, 0, ',', '.') ?>
+                </p>
+                <?php render_numbered_pagination(
+                    $currentPage,
+                    $totalPages,
+                    static fn(int $pageNumber): string => dab_page_url($pageNumber, $search, $perPage)
+                ); ?>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -722,14 +724,6 @@ $programJson = array_map(static fn (array $program): array => [
 
     document.querySelectorAll('[data-modal-close]').forEach((button) => {
         button.addEventListener('click', () => closeModal(button.closest('[data-modal]')));
-    });
-    modals.forEach((modal) => {
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) closeModal(modal);
-        });
-    });
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') modals.forEach(closeModal);
     });
 
     refreshPrograms(postedProgramId);

@@ -42,6 +42,29 @@ function evidence_file_path(?string $storedPath): ?string
     return str_starts_with($normalized, $prefix) ? $candidate : null;
 }
 
+function evidence_level_upload_unlocked(int $levelId): bool
+{
+    $stmt = db()->prepare(
+        'SELECT NOT EXISTS (
+            SELECT 1
+            FROM pemdi_level previous_level
+            INNER JOIN pemdi_evidence previous_evidence
+                ON previous_evidence.id_pemdi_level=previous_level.id
+            WHERE previous_level.id_indikator=current_level.id_indikator
+                AND previous_level.level<current_level.level
+                AND (
+                    previous_evidence.status_upload<>"sudah_diunggah"
+                    OR previous_evidence.file_upload IS NULL
+                    OR TRIM(previous_evidence.file_upload)=""
+                )
+        )
+        FROM pemdi_level current_level
+        WHERE current_level.id=:id'
+    );
+    $stmt->execute(['id' => $levelId]);
+    return (bool) $stmt->fetchColumn();
+}
+
 function evidence_receive_pdf(array $file, array &$errors): ?array
 {
     $error = (int) ($file['error'] ?? UPLOAD_ERR_NO_FILE);
@@ -122,7 +145,7 @@ $returnUrl = 'index.php?' . http_build_query(array_filter([
 $formErrors = [];
 $openFormModal = false;
 $formMode = 'create';
-$formState = ['id' => '', 'id_pemdi_level' => '', 'nama_dokumen' => '', 'skor' => '', 'penjelasan' => '', 'file_upload' => ''];
+$formState = ['id' => '', 'id_pemdi_level' => '', 'nama_dokumen' => '', 'skor' => '', 'penjelasan' => '', 'file_upload' => '', 'file_upload_unlocked' => true];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -139,6 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'skor' => trim((string) ($_POST['skor'] ?? '')),
             'penjelasan' => trim((string) ($_POST['penjelasan'] ?? '')),
             'file_upload' => '',
+            'file_upload_unlocked' => true,
         ];
         $levelId = evidence_int($formState['id_pemdi_level']);
         $removeFile = isset($_POST['remove_file']) && $_POST['remove_file'] === '1';
@@ -175,8 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $formState['file_upload'] = (string) ($oldValues['file_upload'] ?? '');
                 $oldLevel = $levelMap[(int) $oldValues['id_pemdi_level']] ?? null;
+                $formState['file_upload_unlocked'] = ($user['role'] ?? '') !== 'user'
+                    || evidence_level_upload_unlocked((int) $oldValues['id_pemdi_level']);
                 if ($contextIndicatorId && (!$oldLevel || (int) $oldLevel['id_indikator'] !== $contextIndicatorId)) {
                     $formErrors[] = 'Evidence tidak termasuk dalam indikator terpilih.';
+                }
+                $fileChangeRequested = $removeFile
+                    || (int) ($_FILES['file_upload']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+                if (($user['role'] ?? '') === 'user'
+                    && $fileChangeRequested
+                    && !$formState['file_upload_unlocked']) {
+                    $formErrors[] = 'Unggah atau hapus file level ini dikunci. Lengkapi seluruh bukti dukung pada level sebelumnya terlebih dahulu.';
                 }
             }
         }
@@ -285,11 +318,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = trim((string) ($_GET['q'] ?? ''));
 $filterIndicator = $contextIndicatorId;
 $selectedIndicator = $contextIndicator;
-$selectedStats = ['total_score' => 0, 'evidence_count' => 0, 'uploaded_count' => 0];
+$selectedStats = ['maximum_score' => 0, 'achieved_score' => 0, 'evidence_count' => 0, 'uploaded_count' => 0];
 if ($filterIndicator) {
     $stmt = db()->prepare(
-        'SELECT COALESCE(SUM(e.skor),0) total_score,COUNT(*) evidence_count,
-            SUM(CASE WHEN e.status_upload="sudah_diunggah" THEN 1 ELSE 0 END) uploaded_count
+        'SELECT COALESCE(SUM(e.skor),0) maximum_score,
+            COALESCE(SUM(CASE
+                WHEN e.status_upload="sudah_diunggah"
+                    AND e.file_upload IS NOT NULL
+                    AND TRIM(e.file_upload)<>""
+                THEN e.skor ELSE 0 END),0) achieved_score,
+            COUNT(*) evidence_count,
+            SUM(CASE
+                WHEN e.status_upload="sudah_diunggah"
+                    AND e.file_upload IS NOT NULL
+                    AND TRIM(e.file_upload)<>""
+                THEN 1 ELSE 0 END) uploaded_count
          FROM pemdi_evidence e
          INNER JOIN pemdi_level l ON l.id=e.id_pemdi_level
          WHERE l.id_indikator=:id'
@@ -338,6 +381,27 @@ $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $rows = $stmt->fetchAll();
+$levelUploadUnlocked = [];
+$levelUnlockStmt = db()->query(
+    'SELECT current_level.id,
+        NOT EXISTS (
+            SELECT 1
+            FROM pemdi_level previous_level
+            INNER JOIN pemdi_evidence previous_evidence
+                ON previous_evidence.id_pemdi_level=previous_level.id
+            WHERE previous_level.id_indikator=current_level.id_indikator
+                AND previous_level.level<current_level.level
+                AND (
+                    previous_evidence.status_upload<>"sudah_diunggah"
+                    OR previous_evidence.file_upload IS NULL
+                    OR TRIM(previous_evidence.file_upload)=""
+                )
+        ) upload_unlocked
+     FROM pemdi_level current_level'
+);
+foreach ($levelUnlockStmt->fetchAll() as $levelUnlock) {
+    $levelUploadUnlocked[(int) $levelUnlock['id']] = (bool) $levelUnlock['upload_unlocked'];
+}
 $startRow = $totalRows ? $offset + 1 : 0;
 $endRow = min($offset + $perPage, $totalRows);
 ?>
@@ -374,10 +438,14 @@ $endRow = min($offset + $perPage, $totalRows);
                     class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
                     <?= e($selectedIndicator['deskripsi_indikator']) ?></p><?php endif; ?>
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
                 <div class="rounded-md bg-amber-50 px-4 py-3"><span
-                        class="block text-[10px] font-semibold uppercase text-amber-700">Total Skor</span><strong
-                        class="mt-1 block text-lg text-amber-800"><?= e(number_format((float) $selectedStats['total_score'], 2, ',', '.')) ?></strong>
+                        class="block text-[10px] font-semibold uppercase text-amber-700">Skor Maksimal</span><strong
+                        class="mt-1 block text-lg text-amber-800"><?= e(number_format((float) $selectedStats['maximum_score'], 2, ',', '.')) ?></strong>
+                </div>
+                <div class="rounded-md bg-red-50 px-4 py-3"><span
+                        class="block text-[10px] font-semibold uppercase text-red-700">Capaian Skor</span><strong
+                        class="mt-1 block text-lg text-red-800"><?= e(number_format((float) $selectedStats['achieved_score'], 2, ',', '.')) ?></strong>
                 </div>
                 <div class="rounded-md bg-slate-50 px-4 py-3"><span
                         class="block text-[10px] font-semibold uppercase text-slate-500">Evidence</span><strong
@@ -420,19 +488,24 @@ $endRow = min($offset + $perPage, $totalRows);
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+                <colgroup>
+                    <col style="width:3.5rem">
+                </colgroup>
                 <thead class="bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500">
                     <tr>
-                        <th class="px-3 py-3">No</th>
+                        <th class="w-14 min-w-14 max-w-14 px-3 py-3">No</th>
                         <th class="px-3 py-3">Dokumen</th><?php if (!$selectedIndicator): ?><th class="px-3 py-3">
                             Indikator - Level</th>
                         <th class="px-3 py-3">Skor</th><?php endif; ?><th class="px-3 py-3">Status</th>
-                        <th class="px-3 py-3">File</th>
+                        <th class="px-3 py-3">Unduh</th>
+                        <th class="px-3 py-3">Penjelasan</th>
+                        <th class="px-3 py-3">Capaian Skor</th>
                         <th class="px-3 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     <?php if (!$rows): ?><tr>
-                        <td colspan="<?= $selectedIndicator ? 5 : 7 ?>" class="p-10 text-center text-sm text-slate-500">
+                        <td colspan="<?= $selectedIndicator ? 7 : 9 ?>" class="p-10 text-center text-sm text-slate-500">
                             Belum ada evidence.</td>
                     </tr><?php endif; ?>
                     <?php $currentLevelId = null; foreach ($rows as $index => $row):
@@ -448,34 +521,38 @@ $endRow = min($offset + $perPage, $totalRows);
                             'aspek_label' => (string) $row['nama_aspek'],
                             'level_deskripsi' => (string) ($row['level_deskripsi'] ?? ''),
                             'kriteria' => (string) ($row['kriteria'] ?? ''),
+                            'file_upload_unlocked' => ($user['role'] ?? '') !== 'user'
+                                || ($levelUploadUnlocked[(int) $row['id_pemdi_level']] ?? false),
                         ];
+                        $hasUploadedFile = $row['status_upload'] === 'sudah_diunggah'
+                            && trim((string) ($row['file_upload'] ?? '')) !== '';
+                        $achievedScore = $hasUploadedFile && $row['skor'] !== null ? (float) $row['skor'] : 0.0;
                     ?>
                     <?php if ($selectedIndicator && $currentLevelId !== (int) $row['id_pemdi_level']): $currentLevelId = (int) $row['id_pemdi_level']; ?>
                     <tr class="bg-slate-100/90">
-                        <td colspan="5" class="border-y border-slate-200 px-3 py-3">
-                            <div class="grid gap-2 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start">
-                                <span
-                                    class="inline-flex h-7 items-center justify-center whitespace-nowrap rounded-md bg-amber-100 px-2.5 font-bold text-amber-800">
-                                    Level <?= (int) $row['level'] ?>
+                        <!-- <td class="w-14 min-w-14 max-w-14 border-y border-slate-200 p-0"></td> -->
+                        <td colspan="7" class="border-y border-slate-200 px-3 py-3">
+                            <div class="min-w-0 space-y-2">
+                                <span class="inline-flex min-h-7 items-center rounded-md bg-amber-100 px-2.5 py-1 font-bold text-amber-800">
+                                    Level <?= (int) $row['level'] ?><?= $row['level_deskripsi'] ? ' (' . e($row['level_deskripsi']) . ')' : '' ?>
                                 </span>
-                                <div class="min-w-0 space-y-1">
-                                    <p class="whitespace-normal break-words text-xs font-semibold leading-relaxed text-slate-700">
-                                        <?= e($row['level_deskripsi'] ?: 'Tanpa deskripsi level') ?>
-                                    </p>
-                                    <?php if (!empty($row['kriteria'])): ?>
-                                    <p class="whitespace-normal break-words text-xs leading-relaxed text-slate-600">
-                                        <b class="text-slate-700">Kriteria:</b> <?= e($row['kriteria']) ?>
-                                    </p>
-                                    <?php endif; ?>
-                                </div>
+                                <p class="whitespace-normal break-words text-xs leading-relaxed text-slate-600">
+                                    <b class="text-slate-700">Kriteria:</b> <?= e($row['kriteria'] ?: '-') ?>
+                                </p>
+                                <?php if (($user['role'] ?? '') === 'user' && !$record['file_upload_unlocked']): ?>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
                     <?php endif; ?>
                     <tr class="align-top hover:bg-slate-50/70">
-                        <td class="px-3 py-3 text-slate-500"><?= $offset + $index + 1 ?></td>
+                        <td class="w-14 min-w-14 max-w-14 px-3 py-3 text-slate-500"><?= $offset + $index + 1 ?></td>
                         <td class="max-w-[260px] whitespace-normal px-3 py-3 font-semibold text-slate-900">
-                            <?= e($row['nama_dokumen']) ?></td>
+                            <?= e($row['nama_dokumen']) ?>
+                            <?php if ($row['skor'] !== null): ?>
+                                <span class="ml-1 whitespace-nowrap text-red-700">(<?= e(number_format((float) $row['skor'], 2, ',', '.')) ?>)</span>
+                            <?php endif; ?>
+                        </td>
                         <?php if (!$selectedIndicator): ?><td class="max-w-[300px] whitespace-normal px-3 py-3">
                             <p class="font-semibold"><?= e(evidence_level_label($row)) ?></p>
                             <p class="mt-1 text-[11px] text-slate-500"><?= e($row['nama_aspek']) ?></p>
@@ -484,13 +561,21 @@ $endRow = min($offset + $perPage, $totalRows);
                             <?= $row['skor'] !== null ? e(number_format((float) $row['skor'], 2, ',', '.')) : '-' ?>
                         </td><?php endif; ?>
                         <td class="px-3 py-3"><span
-                                class="inline-flex rounded-full px-2 py-1 text-[11px] font-semibold <?= $row['status_upload'] === 'sudah_diunggah' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' ?>"><?= e(evidence_status_label((string) $row['status_upload'])) ?></span>
+                            class="inline-flex rounded-full px-2 py-1 text-[11px] font-semibold <?= $row['status_upload'] === 'sudah_diunggah' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-50 text-red-600' ?>"><?= e(evidence_status_label((string) $row['status_upload'])) ?></span>
                         </td>
-                        <td class="px-3 py-3"><?php if ($row['file_upload']): ?><a
+                        <td class="px-3 py-3">
+                            <?php if ($row['file_upload']): ?><a
                                 href="download_pemdi_evidence.php?id=<?= (int) $row['id'] ?>"
                                 class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-blue-200 bg-blue-50 text-blue-700"
                                 title="Unduh PDF"><i data-lucide="download"
-                                    class="h-4 w-4"></i></a><?php else: ?>-<?php endif; ?></td>
+                                    class="h-4 w-4"></i></a><?php else: ?>-<?php endif; ?>
+                        </td>
+                        <td class="max-w-[300px] whitespace-normal px-3 py-3 text-slate-600">
+                            <?= e($row['penjelasan'] ?: '-') ?>
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-3 font-bold text-red-700">
+                            <?= e(number_format($achievedScore, 2, ',', '.')) ?>
+                        </td>
                         <td class="px-3 py-3">
                             <div class="flex justify-end gap-1.5"><button type="button" class="evidence-action"
                                     title="Lihat" data-evidence-view
@@ -533,6 +618,41 @@ $endRow = min($offset + $perPage, $totalRows);
     box-shadow: 0 0 0 3px rgb(254 226 226/.7)
 }
 
+.evidence-textarea {
+    height: auto;
+    line-height: 1.55;
+    padding: .75rem;
+}
+
+.dropify-wrapper {
+    border: 2px dashed #cbd5e1;
+    border-radius: .75rem;
+    background: #fff;
+    color: #334155;
+    transition: border-color .15s, background-color .15s, opacity .15s;
+}
+
+.dropify-wrapper:hover {
+    border-color: #fca5a5;
+    background: #fffafa;
+}
+
+.dropify-wrapper .dropify-message p {
+    color: #475569;
+    font-size: .875rem;
+}
+
+.dropify-wrapper .dropify-message span.file-icon {
+    color: #b91c1c;
+}
+
+.dropify-wrapper.evidence-upload-disabled {
+    pointer-events: none;
+    border-color: #fcd34d;
+    background: #fffbeb;
+    opacity: .72;
+}
+
 .evidence-label {
     display: block;
     margin-bottom: .3rem;
@@ -560,7 +680,7 @@ $endRow = min($offset + $perPage, $totalRows);
 
 <div class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4" data-modal="evidence-form">
     <form method="post" action="<?= e($returnUrl) ?>" enctype="multipart/form-data"
-        class="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
+        class="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
         <?= csrf_field() ?><input type="hidden" name="action" value="<?= e($formMode) ?>" data-evidence-action><input
             type="hidden" name="id" value="<?= e($formState['id']) ?>" data-evidence-field="id">
         <header class="flex items-center justify-between border-b px-5 py-4">
@@ -579,24 +699,36 @@ $endRow = min($offset + $perPage, $totalRows);
                     <?php endforeach; ?>
                 </select><?php if ($selectedIndicator): ?><input type="hidden" name="id_pemdi_level"
                     data-evidence-level-hidden><?php endif; ?></label>
-            <label class="md:col-span-2"><span class="evidence-label">Nama Dokumen</span><input name="nama_dokumen"
-                    type="text" maxlength="255" class="evidence-control w-full read-only:cursor-not-allowed read-only:bg-slate-100 read-only:text-slate-500" data-evidence-field="nama_dokumen"
-                    required <?= $selectedIndicator ? 'readonly' : '' ?>></label>
+            <label class="md:col-span-2"><span class="evidence-label">Nama Dokumen</span><textarea name="nama_dokumen"
+                    rows="3" maxlength="255" class="evidence-control evidence-textarea min-h-24 w-full resize-y read-only:cursor-not-allowed read-only:bg-slate-100 read-only:text-slate-500"
+                    data-evidence-field="nama_dokumen" placeholder="Tuliskan nama dokumen bukti dukung secara jelas"
+                    required <?= $selectedIndicator ? 'readonly' : '' ?>></textarea></label>
             <label><span class="evidence-label">Skor</span><input name="skor" type="number" min="0" max="100"
                     step="0.01" class="evidence-control w-full read-only:cursor-not-allowed read-only:bg-slate-100 read-only:text-slate-500" data-evidence-field="skor"
                     <?= $selectedIndicator ? 'readonly' : '' ?>></label>
-            <label><span class="evidence-label">File PDF</span><input name="file_upload" type="file"
-                    accept="application/pdf,.pdf"
-                    class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-2 file:text-xs file:font-semibold"
-                    data-evidence-file><span class="mt-1 block text-xs text-slate-500">Maksimal 10 MB.</span></label>
             <label class="md:col-span-2"><span class="evidence-label">Penjelasan</span><textarea name="penjelasan"
-                    rows="4" class="evidence-control w-full" data-evidence-field="penjelasan"
-                    placeholder="Tuliskan penjelasan evidence..."></textarea></label>
-            <div class="hidden rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700 md:col-span-2"
-                data-current-file>
-                <div class="flex items-center justify-between gap-3"><span>PDF saat ini tersedia.</span><label
-                        class="inline-flex items-center gap-2 font-semibold"><input type="checkbox" name="remove_file"
-                            value="1">Hapus PDF</label></div>
+                    rows="7" class="evidence-control evidence-textarea min-h-44 w-full resize-y"
+                    data-evidence-field="penjelasan"
+                    placeholder="Jelaskan isi, relevansi, dan konteks bukti dukung yang diunggah"></textarea></label>
+            <div class="md:col-span-2">
+                <span class="evidence-label">Unggah PDF</span>
+                <input name="file_upload" type="file" accept="application/pdf,.pdf"
+                    class="dropify" data-evidence-file data-height="150"
+                    data-allowed-file-extensions="pdf" data-max-file-size="10M">
+                <div class="mt-2 hidden rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700"
+                    data-current-file>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span class="inline-flex items-center gap-2 font-semibold"><i data-lucide="file-check-2" class="h-4 w-4"></i>PDF saat ini tersedia.</span>
+                        <label class="inline-flex items-center gap-2 font-semibold"><input type="checkbox"
+                                name="remove_file" value="1">Hapus PDF</label>
+                    </div>
+                </div>
+                <div class="mt-2 hidden rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800"
+                    data-evidence-upload-lock>
+                    <span class="inline-flex items-start gap-2"><i data-lucide="triangle-alert" class="mt-0.5 h-4 w-4 shrink-0"></i>
+                        Unggah dokumen dinonaktifkan. Seluruh bukti dukung pada level sebelumnya harus diunggah terlebih dahulu.
+                    </span>
+                </div>
             </div>
         </div>
         <footer class="flex justify-end gap-2 border-t px-5 py-3"><button type="button"
@@ -646,7 +778,25 @@ $endRow = min($offset + $perPage, $totalRows);
         posted = <?= json_encode($formState, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     const input = name => form.querySelector(`[data-evidence-field="${name}"]`),
         fileInput = form.querySelector('[data-evidence-file]'),
-        currentFile = form.querySelector('[data-current-file]');
+        currentFile = form.querySelector('[data-current-file]'),
+        removeFileInput = form.querySelector('[name="remove_file"]'),
+        uploadLock = form.querySelector('[data-evidence-upload-lock]');
+    let dropifyInstance = null;
+    if (window.jQuery && window.jQuery.fn.dropify) {
+        const dropifyElement = window.jQuery(fileInput).dropify({
+            messages: {
+                default: 'Pilih atau seret dokumen PDF ke area ini',
+                replace: 'Pilih atau seret PDF lain untuk mengganti',
+                remove: 'Hapus pilihan',
+                error: 'File tidak dapat digunakan'
+            },
+            error: {
+                fileSize: 'Ukuran file maksimal 10 MB.',
+                fileExtension: 'File harus berformat PDF.'
+            }
+        });
+        dropifyInstance = dropifyElement.data('dropify')
+    }
     const open = modal => {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -664,9 +814,29 @@ $endRow = min($offset + $perPage, $totalRows);
         });
         const hiddenLevel = form.querySelector('[data-evidence-level-hidden]');
         if (hiddenLevel) hiddenLevel.value = record.id_pemdi_level || '';
-        fileInput.value = '';
-        form.querySelector('[name="remove_file"]').checked = false;
-        currentFile.classList.toggle('hidden', !record.file_upload)
+        if (dropifyInstance) {
+            dropifyInstance.resetPreview();
+            dropifyInstance.clearElement()
+        } else {
+            fileInput.value = ''
+        }
+        removeFileInput.checked = false;
+        const fileUploadUnlocked = record.file_upload_unlocked !== false;
+        fileInput.disabled = !fileUploadUnlocked;
+        removeFileInput.disabled = !fileUploadUnlocked;
+        uploadLock.classList.toggle('hidden', fileUploadUnlocked);
+        currentFile.classList.toggle('hidden', !record.file_upload);
+        const dropifyWrapper = fileInput.closest('.dropify-wrapper');
+        dropifyWrapper?.classList.toggle('evidence-upload-disabled', !fileUploadUnlocked);
+        dropifyWrapper?.setAttribute('aria-disabled', fileUploadUnlocked ? 'false' : 'true');
+        const dropifyMessage = dropifyWrapper?.querySelector('.dropify-message p');
+        if (dropifyMessage) {
+            dropifyMessage.textContent = !fileUploadUnlocked
+                ? 'Upload dokumen dikunci sampai level sebelumnya lengkap'
+                : (record.file_upload
+                    ? 'Pilih atau seret PDF pengganti ke area ini'
+                    : 'Pilih atau seret dokumen PDF ke area ini')
+        }
     };
     document.querySelector('[data-evidence-add]')?.addEventListener('click', () => {
         fill({});
@@ -697,12 +867,6 @@ $endRow = min($offset + $perPage, $totalRows);
     }));
     document.querySelectorAll('[data-modal-close]').forEach(button => button.addEventListener('click', () => close(
         button.closest('[data-modal]'))));
-    modals.forEach(modal => modal.addEventListener('click', event => {
-        if (event.target === modal) close(modal)
-    }));
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') modals.forEach(close)
-    });
     <?php if ($openFormModal): ?>fill(posted);
     form.querySelector('[data-evidence-action]').value = <?= json_encode($formMode) ?>;
     form.querySelector('[data-evidence-title]').textContent =

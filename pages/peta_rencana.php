@@ -321,11 +321,13 @@ $programJson = array_map(static fn(array $item): array => [
                     <p class="text-xs font-semibold uppercase text-red-700">Indikator Terpilih</p>
                     <h2 class="mt-1 text-lg font-bold"><span class="text-blue-600">#<?= e($selectedIndicator['id']) ?></span> <?= e($selectedIndicator['nama_indikator']) ?></h2>
                     <p class="mt-1 text-sm text-slate-500"><?= e($selectedIndicator['nama_aspek']) ?></p>
-                    <?php if (!empty($selectedIndicator['deskripsi_indikator'])): ?><p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600"><?= e($selectedIndicator['deskripsi_indikator']) ?></p><?php endif; ?>
+
+                    <p class="mt-1"><span class="text-[12px] font-bold uppercase text-slate-700">Bobot:</span> <strong class="text-[12px] font-semibold uppercase text-red-700"><?= e(number_format((float) $selectedIndicator['bobot'], 2, ',', '.')) ?>%</strong></p>
+                    <p class="mt-1"><span class="text-[12px] font-bold uppercase text-slate-700">Koordinator:</span> <strong class="text-[12px] font-semibold uppercase text-red-700"><?= e($selectedIndicator['koordinator'] ?: '-') ?></strong></p>
+                    <p class="mt-1"><span class="text-[12px] font-bold uppercase text-slate-700">Kriteria:</span> <span class="text-sm leading-relaxed text-slate-600"><?= e($selectedIndicator['deskripsi_indikator'] ?: '-') ?></span></p>
                 </div>
                 <div class="grid shrink-0 grid-cols-2 gap-3 text-sm">
-                    <div class="rounded-md bg-slate-50 px-4 py-3"><span class="block text-[10px] font-semibold uppercase text-slate-500">Bobot</span><strong class="mt-1 block text-red-700"><?= e(number_format((float) $selectedIndicator['bobot'], 2, ',', '.')) ?>%</strong></div>
-                    <div class="rounded-md bg-slate-50 px-4 py-3"><span class="block text-[10px] font-semibold uppercase text-slate-500">Koordinator</span><strong class="mt-1 block"><?= e($selectedIndicator['koordinator'] ?: '-') ?></strong></div>
+                    <div class="rounded-md bg-slate-50 px-4 py-3"></div>
                 </div>
             </div>
         </div>
@@ -480,8 +482,6 @@ $programJson = array_map(static fn(array $item): array => [
     document.querySelectorAll('[data-peta-view]').forEach(button => button.addEventListener('click', () => { const record=JSON.parse(button.dataset.record || '{}'); view.querySelectorAll('[data-view-field]').forEach(element => element.textContent=record[element.dataset.viewField] || '-'); open(view); }));
     document.querySelectorAll('[data-peta-delete]').forEach(button => button.addEventListener('click', () => { del.querySelector('[data-delete-id]').value=button.dataset.id; del.querySelector('[data-delete-name]').textContent=button.dataset.name; open(del); }));
     document.querySelectorAll('[data-modal-close]').forEach(button => button.addEventListener('click', () => close(button.closest('[data-modal]'))));
-    modals.forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) close(modal); }));
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') modals.forEach(close); });
     refreshIndicators('');
     refreshPrograms('');
     <?php if ($openFormModal): ?>fill(posted);form.querySelector('[data-peta-action]').value=<?= json_encode($formMode) ?>;form.querySelector('[data-peta-title]').textContent=<?= json_encode(($formMode === 'update' ? 'Edit ' : 'Tambah ') . 'Peta Rencana') ?>;open(form);<?php endif; ?>

@@ -64,7 +64,7 @@ $rows = $stmt->fetchAll();
         .toolbar { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 14px; }
         .toolbar button,.toolbar a { border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; padding: 7px 12px; color: #334155; font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; }
         .toolbar .primary { border-color: #1d4ed8; background: #1d4ed8; color: #fff; }
-        h1 { margin: 0; text-align: center; font-size: 16px; }
+        h1 { margin: 4px 0 10px; text-align: center; font-size: 16px; }
         .meta { margin: 5px 0 14px; text-align: center; color: #64748b; font-size: 9px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th,td { border: 1px solid #475569; padding: 6px; vertical-align: top; overflow-wrap: anywhere; }
@@ -75,9 +75,8 @@ $rows = $stmt->fetchAll();
     </style>
 </head>
 <body>
-    <div class="toolbar"><a href="../index.php?page=<?= e($config['back']) ?>">Kembali</a><button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button></div>
     <h1><?= e($config['title']) ?></h1>
-    <p class="meta">Jumlah data: <?= number_format(count($rows), 0, ',', '.') ?><?= $search !== '' ? ' · Pencarian: ' . e($search) : '' ?> · Dicetak <?= e(date('d/m/Y H:i')) ?></p>
+    <!-- <p class="meta">Jumlah data: <?= number_format(count($rows), 0, ',', '.') ?><?= $search !== '' ? ' · Pencarian: ' . e($search) : '' ?> · Dicetak <?= e(date('d/m/Y H:i')) ?></p> -->
     <table>
         <thead><tr><th class="number">No</th><?php foreach ($config['headers'] as $header): ?><th><?= e($header) ?></th><?php endforeach; ?></tr></thead>
         <tbody>

@@ -258,7 +258,15 @@ $selectSql = $isIndicator
         (SELECT COALESCE(SUM(e.skor),0)
          FROM pemdi_level l
          INNER JOIN pemdi_evidence e ON e.id_pemdi_level=l.id
-         WHERE l.id_indikator=m.id) total_skor,
+         WHERE l.id_indikator=m.id) skor_maksimal,
+        (SELECT COALESCE(SUM(CASE
+            WHEN e.status_upload="sudah_diunggah"
+                AND e.file_upload IS NOT NULL
+                AND TRIM(e.file_upload)<>""
+            THEN e.skor ELSE 0 END),0)
+         FROM pemdi_level l
+         INNER JOIN pemdi_evidence e ON e.id_pemdi_level=l.id
+         WHERE l.id_indikator=m.id) capaian_skor,
         ((SELECT COUNT(*) FROM peta_rencana p WHERE p.id_indikator=m.id)
         +(SELECT COUNT(*) FROM pemdi_level l WHERE l.id_indikator=m.id)) reference_count'
     : 'SELECT m.*,
@@ -356,7 +364,7 @@ $endRow = min($offset + $perPage, $totalRows);
                         <tr class="hover:bg-slate-50/70">
                             <td class="px-4 py-3 text-slate-500"><?= $offset + $index + 1 ?></td>
                             <td class="max-w-xl whitespace-normal px-4 py-3"><p class="font-semibold text-slate-900"><?= e($row[$nameField]) ?></p><?php if ($isIndicator && !empty($row['deskripsi_indikator'])): ?><p class="mt-1 text-xs text-slate-500"><?= e($row['deskripsi_indikator']) ?></p><?php endif; ?></td>
-                            <?php if ($isIndicator): ?><td class="max-w-xs whitespace-normal px-4 py-3 text-slate-600"><p class="text-xs font-medium text-slate-800"><?= e(master_rencana_label($row['kode_skpd'] ?? '', $row['nama_skpd'] ?? '') ?: '-') ?></p><p class="mt-1 text-xs text-slate-500"><?= e($row['koordinator'] ?: '-') ?></p></td><td class="px-4 py-3 font-semibold text-red-700"><?= e(number_format((float) $row['bobot'], 2, ',', '.')) ?>%</td><td class="px-4 py-3 font-semibold text-amber-700"><?= e(number_format((float) $row['total_skor'], 2, ',', '.')) ?></td><?php else: ?><td class="px-4 py-3 text-slate-600"><?= (int) $row['indikator_count'] ?></td><td class="px-4 py-3 font-semibold text-red-700"><?= e(number_format((float) $row['total_bobot'], 2, ',', '.')) ?>%</td><?php endif; ?>
+                            <?php if ($isIndicator): ?><td class="max-w-xs whitespace-normal px-4 py-3 text-slate-600"><p class="text-xs font-medium text-slate-800"><?= e(master_rencana_label($row['kode_skpd'] ?? '', $row['nama_skpd'] ?? '') ?: '-') ?></p><p class="mt-1 text-xs text-slate-500"><?= e($row['koordinator'] ?: '-') ?></p></td><td class="px-4 py-3 font-semibold text-red-700"><?= e(number_format((float) $row['bobot'], 2, ',', '.')) ?>%</td><td class="whitespace-nowrap px-4 py-3 font-semibold text-amber-700" title="Capaian Skor / Skor Maksimal"><?= e(number_format((float) $row['capaian_skor'], 2, ',', '.')) ?>/<?= e(number_format((float) $row['skor_maksimal'], 2, ',', '.')) ?></td><?php else: ?><td class="px-4 py-3 text-slate-600"><?= (int) $row['indikator_count'] ?></td><td class="px-4 py-3 font-semibold text-red-700"><?= e(number_format((float) $row['total_bobot'], 2, ',', '.')) ?>%</td><?php endif; ?>
                             <td class="px-4 py-3">
                                 <div class="flex justify-end gap-1.5">
                                     <?php if ($isIndicator): ?>

@@ -251,7 +251,19 @@ foreach ($dabList as $dab) $dabLabelMap[(int) $dab['id']] = sprintf('DAB-%03d - 
             foreach ($cells as $cell): ?><td class="max-w-[230px] whitespace-normal break-words p-3"><?= $cell ?></td><?php endforeach; ?>
             <td class="p-3"><div class="flex justify-end gap-1"><button data-dad-view data-record="<?= e(json_encode($record, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>" title="Lihat" class="h-8 w-8 rounded border"><i data-lucide="eye" class="mx-auto h-4 w-4"></i></button><button data-dad-edit data-record="<?= e(json_encode($record, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>" title="Edit" class="h-8 w-8 rounded border border-blue-200 bg-blue-50 text-blue-700"><i data-lucide="pencil" class="mx-auto h-4 w-4"></i></button><button data-dad-delete data-id="<?= (int)$row['id'] ?>" data-name="<?= e($row['nama_data']) ?>" title="Hapus" class="h-8 w-8 rounded border border-red-200 bg-red-50 text-red-700"><i data-lucide="trash-2" class="mx-auto h-4 w-4"></i></button></div></td>
         </tr><?php endforeach; ?></tbody></table></div>
-        <div class="flex justify-between border-t p-4 text-sm text-slate-500"><span>Menampilkan <?= $totalRows ? $offset+1 : 0 ?>-<?= min($offset+$perPage,$totalRows) ?> dari <?= $totalRows ?> data</span><span><?php if($currentPage>1):?><a class="mr-2 rounded border p-2" href="<?= e(dad_url($currentPage-1,$search,$perPage)) ?>">Sebelumnya</a><?php endif;?><?php if($currentPage<$totalPages):?><a class="rounded border p-2" href="<?= e(dad_url($currentPage+1,$search,$perPage)) ?>">Berikutnya</a><?php endif;?></span></div>
+        <?php if ($totalRows > 0): ?>
+            <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <p class="text-sm text-slate-500">
+                    Data <?= number_format($offset + 1, 0, ',', '.') ?>&ndash;<?= number_format(min($offset + $perPage, $totalRows), 0, ',', '.') ?>
+                    dari <?= number_format($totalRows, 0, ',', '.') ?>
+                </p>
+                <?php render_numbered_pagination(
+                    $currentPage,
+                    $totalPages,
+                    static fn(int $pageNumber): string => dad_url($pageNumber, $search, $perPage)
+                ); ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -301,5 +313,5 @@ document.querySelector('[data-dad-add]').onclick=()=>{fill({id_dab:[]});form.que
 document.querySelectorAll('[data-dad-edit]').forEach(b=>b.onclick=()=>{fill(JSON.parse(b.dataset.record));form.querySelector('[data-dad-action]').value='update';form.querySelector('[data-dad-title]').textContent='Edit Data DAD';form.querySelector('[data-dad-submit]').textContent='Simpan Perubahan';open(form)});
 document.querySelectorAll('[data-dad-view]').forEach(b=>b.onclick=()=>{let r=JSON.parse(b.dataset.record);view.querySelectorAll('[data-view]').forEach(x=>x.textContent=r[x.dataset.view]||'—');open(view)});
 document.querySelectorAll('[data-dad-delete]').forEach(b=>b.onclick=()=>{del.querySelector('[data-delete-id]').value=b.dataset.id;del.querySelector('[data-delete-name]').textContent=b.dataset.name;open(del)});
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.closest('[data-modal]')));modals.forEach(m=>m.onclick=e=>{if(e.target===m)close(m)});refresh(String(posted.id_program||''));refreshDal(String(posted.id_dal||''));syncDabUi();<?php if($openFormModal):?>fill(posted);form.querySelector('[data-dad-action]').value=<?= json_encode($formMode) ?>;open(form);<?php endif;?>})();
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.closest('[data-modal]')));refresh(String(posted.id_program||''));refreshDal(String(posted.id_dal||''));syncDabUi();<?php if($openFormModal):?>fill(posted);form.querySelector('[data-dad-action]').value=<?= json_encode($formMode) ?>;open(form);<?php endif;?>})();
 </script>

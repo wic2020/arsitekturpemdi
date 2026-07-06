@@ -99,7 +99,7 @@ function print_dak_value(mixed $code, mixed $name): string
         .toolbar { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px; }
         .toolbar button, .toolbar a { border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; padding: 7px 12px; color: #334155; font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; }
         .toolbar .primary { border-color: #1d4ed8; background: #1d4ed8; color: #fff; }
-        h1 { margin: 0; text-align: center; font-size: 14px; }
+        h1 { margin: 4px 0 10px; text-align: center; font-size: 14px; }
         .meta { margin: 4px 0 10px; text-align: center; color: #64748b; font-size: 8px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { border: 1px solid #475569; padding: 3px 4px; vertical-align: top; overflow-wrap: anywhere; line-height: 1.2; }
@@ -115,13 +115,9 @@ function print_dak_value(mixed $code, mixed $name): string
     </style>
 </head>
 <body>
-    <div class="toolbar">
-        <a href="../index.php?page=<?= e($type) ?>">Kembali</a>
-        <button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button>
-    </div>
-
+  
     <h1>Domain Arsitektur Keamanan - <?= e($config['title']) ?></h1>
-    <p class="meta">Jumlah data: <?= number_format(count($rows), 0, ',', '.') ?> &middot; Dicetak <?= e(date('d/m/Y H:i')) ?></p>
+    <!-- <p class="meta">Jumlah data: <?= number_format(count($rows), 0, ',', '.') ?> &middot; Dicetak <?= e(date('d/m/Y H:i')) ?></p> -->
 
     <table>
         <thead>

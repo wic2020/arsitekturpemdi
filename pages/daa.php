@@ -312,7 +312,19 @@ $rows = $stmt->fetchAll();
             <td class="max-w-[260px] whitespace-normal break-words p-3 font-semibold"><?= e($record['skpd_label'] ?: '-') ?></td>
             <td class="p-3"><div class="flex justify-end gap-1"><button class="daa-action" data-daa-view data-record="<?= e(json_encode($record,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>"><i data-lucide="eye"></i></button><button class="daa-action border-blue-200 bg-blue-50 text-blue-700" data-daa-edit data-record="<?= e(json_encode($record,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>"><i data-lucide="pencil"></i></button><button class="daa-action border-red-200 bg-red-50 text-red-700" data-daa-delete data-id="<?= $record['id'] ?>" data-name="<?= e($record['nama_aplikasi']) ?>"><i data-lucide="trash-2"></i></button></div></td>
         </tr><?php endforeach;?></tbody></table></div>
-        <div class="flex justify-between border-t p-4 text-sm text-slate-500"><span>Menampilkan <?= $totalRows?$offset+1:0 ?>-<?= min($offset+$perPage,$totalRows) ?> dari <?= $totalRows ?> data</span><span><?php if($currentPage>1):?><a class="mr-2 rounded border p-2" href="<?= e(daa_url($currentPage-1,$search,$perPage)) ?>">Sebelumnya</a><?php endif;?><?php if($currentPage<$totalPages):?><a class="rounded border p-2" href="<?= e(daa_url($currentPage+1,$search,$perPage)) ?>">Berikutnya</a><?php endif;?></span></div>
+        <?php if ($totalRows > 0): ?>
+            <div class="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <p class="text-sm text-slate-500">
+                    Data <?= number_format($offset + 1, 0, ',', '.') ?>&ndash;<?= number_format(min($offset + $perPage, $totalRows), 0, ',', '.') ?>
+                    dari <?= number_format($totalRows, 0, ',', '.') ?>
+                </p>
+                <?php render_numbered_pagination(
+                    $currentPage,
+                    $totalPages,
+                    static fn(int $pageNumber): string => daa_url($pageNumber, $search, $perPage)
+                ); ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -362,5 +374,5 @@ document.querySelector('[data-daa-add]').onclick=()=>{fill({});form.querySelecto
 document.querySelectorAll('[data-daa-edit]').forEach(b=>b.onclick=()=>{fill(JSON.parse(b.dataset.record));form.querySelector('[data-daa-action]').value='update';form.querySelector('[data-daa-title]').textContent='Edit Data DAA';form.querySelector('[data-daa-submit]').textContent='Simpan Perubahan';open(form)});
 document.querySelectorAll('[data-daa-view]').forEach(b=>b.onclick=()=>{let r=JSON.parse(b.dataset.record);view.querySelectorAll('[data-view]').forEach(x=>x.textContent=r[x.dataset.view]||'—');open(view)});
 document.querySelectorAll('[data-daa-delete]').forEach(b=>b.onclick=()=>{del.querySelector('[data-delete-id]').value=b.dataset.id;del.querySelector('[data-delete-name]').textContent=b.dataset.name;open(del)});
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.closest('[data-modal]')));modals.forEach(m=>m.onclick=e=>{if(e.target===m)close(m)});fill(posted);<?php if($openFormModal):?>form.querySelector('[data-daa-action]').value=<?= json_encode($formMode) ?>;open(form);<?php endif;?>})();
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.closest('[data-modal]')));fill(posted);<?php if($openFormModal):?>form.querySelector('[data-daa-action]').value=<?= json_encode($formMode) ?>;open(form);<?php endif;?>})();
 </script>
