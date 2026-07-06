@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 require_login();
 
 $rows = db()->query(
@@ -73,7 +73,7 @@ function print_dai_facility_bandwidth(mixed $value): string
 </head>
 <body>
     <div class="toolbar">
-        <a href="index.php?page=dai-fasilitas-komputasi">Kembali</a>
+        <a href="../index.php?page=dai-fasilitas-komputasi">Kembali</a>
         <button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button>
     </div>
 

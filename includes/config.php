@@ -4,18 +4,70 @@ declare(strict_types=1);
 
 /*
  * Konfigurasi inti Sistem Informasi Arsitektur SPBE.
- * Nilai database dapat dioverride melalui environment variable DB_*.
+ * Rahasia aplikasi dibaca dari environment server atau .env lokal.
  */
 
 const APP_NAME = 'Sistem Informasi Arsitektur SPBE';
-const APP_URL = 'https://superapp.test/app_arsitektur_v2';
 const APP_TIMEZONE = 'Asia/Jakarta';
 
-const DB_HOST = '127.0.0.1';
-const DB_PORT = '3306';
-const DB_NAME = 'dbarsitektur';
-const DB_USER = 'root';
-const DB_PASS = '';
+function load_environment_file(string $path): void
+{
+    if (!is_file($path)) return;
+    if (!is_readable($path)) {
+        throw new RuntimeException('File environment tidak dapat dibaca.');
+    }
+
+    $values = parse_ini_file($path, false, INI_SCANNER_RAW);
+    if ($values === false) {
+        throw new RuntimeException('Format file environment tidak valid.');
+    }
+
+    foreach ($values as $key => $value) {
+        if (!is_string($key) || !is_scalar($value) || getenv($key) !== false) continue;
+        $stringValue = (string) $value;
+        putenv("{$key}={$stringValue}");
+        $_ENV[$key] = $stringValue;
+    }
+}
+
+function env_required(string $key, bool $allowEmpty = false): string
+{
+    $value = getenv($key);
+    if ($value === false || (!$allowEmpty && trim($value) === '')) {
+        throw new RuntimeException("Environment variable {$key} belum dikonfigurasi.");
+    }
+
+    return $value;
+}
+
+try {
+    load_environment_file(dirname(__DIR__) . '/.env');
+
+    $appEnvironment = strtolower(env_required('APP_ENV'));
+    if (!in_array($appEnvironment, ['local', 'testing', 'production'], true)) {
+        throw new RuntimeException('APP_ENV harus bernilai local, testing, atau production.');
+    }
+
+    foreach (['APP_URL', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER'] as $requiredKey) {
+        env_required($requiredKey);
+    }
+    $databasePassword = env_required('DB_PASS', true);
+
+    if ($appEnvironment === 'production') {
+        if (strtolower(env_required('DB_USER')) === 'root') {
+            throw new RuntimeException('DB_USER production tidak boleh menggunakan root.');
+        }
+        if ($databasePassword === '') {
+            throw new RuntimeException('DB_PASS production tidak boleh kosong.');
+        }
+        ini_set('display_errors', '0');
+        ini_set('log_errors', '1');
+    }
+} catch (Throwable $exception) {
+    error_log('Konfigurasi aplikasi gagal: ' . $exception->getMessage());
+    http_response_code(500);
+    exit('Konfigurasi aplikasi belum lengkap. Silakan hubungi administrator.');
+}
 
 date_default_timezone_set(APP_TIMEZONE);
 
@@ -40,13 +92,6 @@ if (PHP_SAPI !== 'cli' && !headers_sent()) {
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 }
 
-function env_value(string $key, string $default): string
-{
-    $value = getenv($key);
-
-    return $value === false ? $default : $value;
-}
-
 function db(): PDO
 {
     static $pdo = null;
@@ -55,11 +100,11 @@ function db(): PDO
         return $pdo;
     }
 
-    $host = env_value('DB_HOST', DB_HOST);
-    $port = env_value('DB_PORT', DB_PORT);
-    $name = env_value('DB_NAME', DB_NAME);
-    $user = env_value('DB_USER', DB_USER);
-    $pass = env_value('DB_PASS', DB_PASS);
+    $host = env_required('DB_HOST');
+    $port = env_required('DB_PORT');
+    $name = env_required('DB_NAME');
+    $user = env_required('DB_USER');
+    $pass = env_required('DB_PASS', true);
     $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
 
     try {
@@ -85,7 +130,7 @@ function e(mixed $value): string
 
 function app_url(string $path = ''): string
 {
-    return rtrim(APP_URL, '/') . ($path !== '' ? '/' . ltrim($path, '/') : '');
+    return rtrim(env_required('APP_URL'), '/') . ($path !== '' ? '/' . ltrim($path, '/') : '');
 }
 
 function redirect(string $path): never

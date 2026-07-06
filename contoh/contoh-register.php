@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 
-guest_only();
+if (current_user()) redirect('contoh-index.php');
 
 $errors = [];
 $name = '';
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = (int) db()->lastInsertId();
         audit_log($userId, 'register', 'users', $userId, 'Registrasi akun baru');
         set_flash('success', 'Registrasi berhasil. Silakan login.');
-        redirect('login.php');
+        redirect('contoh-login.php');
     }
 }
 ?>
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <p class="text-center text-sm text-slate-500">
                     Sudah punya akun?
-                    <a href="login.php" class="font-semibold text-blue-700 hover:text-blue-800">Login</a>
+                    <a href="contoh-login.php" class="font-semibold text-blue-700 hover:text-blue-800">Login</a>
                 </p>
             </form>
         </section>

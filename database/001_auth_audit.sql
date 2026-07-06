@@ -38,15 +38,3 @@ CREATE TABLE IF NOT EXISTS audit_logs (
         FOREIGN KEY (user_id) REFERENCES users (id)
         ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO users (name, username, email, password, role, is_active)
-SELECT
-    'Administrator',
-    'admin',
-    'admin@superapp.test',
-    '$2y$10$esLK1KiDcjan/XYDZrGpnud5xqfl/FrW5m4Wb1DcqImHwqTjA8bPm',
-    'admin',
-    1
-WHERE NOT EXISTS (
-    SELECT 1 FROM users WHERE username = 'admin' OR email = 'admin@superapp.test'
-);

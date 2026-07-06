@@ -276,7 +276,7 @@ $programJson = array_map(static fn (array $program): array => [
             <p class="mt-1 text-sm text-slate-500">Kelola proses bisnis instansi yang terhubung dengan SKPD, program, dan referensi RAB.</p>
         </div>
         <div class="flex gap-2">
-            <a href="cetak_dab.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+            <a href="cetak/cetak_dab.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
                 <i data-lucide="printer" class="h-4 w-4"></i>
                 Cetak
             </a>

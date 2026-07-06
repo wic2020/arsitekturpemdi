@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 require_login();
 
 $type = (string) ($_GET['type'] ?? '');
@@ -75,7 +75,7 @@ $rows = $stmt->fetchAll();
     </style>
 </head>
 <body>
-    <div class="toolbar"><a href="index.php?page=<?= e($config['back']) ?>">Kembali</a><button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button></div>
+    <div class="toolbar"><a href="../index.php?page=<?= e($config['back']) ?>">Kembali</a><button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button></div>
     <h1><?= e($config['title']) ?></h1>
     <p class="meta">Jumlah data: <?= number_format(count($rows), 0, ',', '.') ?><?= $search !== '' ? ' · Pencarian: ' . e($search) : '' ?> · Dicetak <?= e(date('d/m/Y H:i')) ?></p>
     <table>

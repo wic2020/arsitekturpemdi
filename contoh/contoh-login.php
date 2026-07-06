@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 
-guest_only();
+if (current_user()) redirect('contoh-index.php');
 
 $errors = [];
 $username = '';
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, (string) $user['password'])) {
             login_user($user);
             audit_log((int) $user['id'], 'login', 'users', (int) $user['id'], 'User login');
-            redirect('index.php');
+            redirect('contoh-index.php');
         }
 
         $errors[] = 'Username atau password salah.';
@@ -97,7 +97,7 @@ $flash = flash();
 
                 <p class="text-center text-sm text-slate-500">
                     Belum punya akun?
-                    <a href="register.php" class="font-semibold text-blue-700 hover:text-blue-800">Daftar</a>
+                    <a href="contoh-register.php" class="font-semibold text-blue-700 hover:text-blue-800">Daftar</a>
                 </p>
             </form>
         </section>

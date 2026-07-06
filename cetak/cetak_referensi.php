@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 require_login();
 
 $references = [
@@ -68,7 +68,7 @@ function print_reference_value(array $row, string $type, int $level): string
 </head>
 <body>
     <div class="toolbar">
-        <a href="index.php?page=<?= e($type) ?>">Kembali</a>
+        <a href="../index.php?page=<?= e($type) ?>">Kembali</a>
         <button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button>
     </div>
 

@@ -285,8 +285,8 @@ $endRow = min($offset + $perPage, $totalRows);
             <p class="mt-1 text-sm text-slate-500"><?= e($config['description']) ?></p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <a href="cetak_master_rencana.php?<?= e(http_build_query(['type' => $page, 'q' => $search ?? ''])) ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"><i data-lucide="printer" class="h-4 w-4"></i><?= $isIndicator ? 'Cetak Indikator' : 'Cetak' ?></a>
-            <?php if ($isIndicator): ?><a href="cetak_peta_rencana.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"><i data-lucide="map" class="h-4 w-4"></i>Cetak Peta Rencana</a><?php endif; ?>
+            <a href="cetak/cetak_master_rencana.php?<?= e(http_build_query(['type' => $page, 'q' => $search ?? ''])) ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"><i data-lucide="printer" class="h-4 w-4"></i><?= $isIndicator ? 'Cetak Indikator' : 'Cetak' ?></a>
+            <?php if ($isIndicator): ?><a href="cetak/cetak_peta_rencana.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"><i data-lucide="map" class="h-4 w-4"></i>Cetak Peta Rencana</a><?php endif; ?>
             <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500" data-master-add <?= $isIndicator ? 'disabled aria-disabled="true" title="Penambahan indikator dinonaktifkan"' : '' ?>>
                 <i data-lucide="plus" class="h-4 w-4"></i>Tambah Data
             </button>

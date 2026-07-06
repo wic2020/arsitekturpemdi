@@ -1,64 +1,67 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 
-require_login();
+$user = current_user();
+if (!$user) {
+    set_flash('error', 'Silakan login untuk melanjutkan.');
+    redirect('contoh-login.php');
+}
 
 ob_start();
 
-$user = current_user();
 $page = (string) ($_GET['page'] ?? 'dashboard');
 $routes = [
     'dashboard' => [
         'title' => 'Dashboard',
-        'file' => __DIR__ . '/pages/dashboard.php',
+        'file' => dirname(__DIR__) . '/pages/dashboard.php',
     ],
     'arsitektur' => [
         'title' => 'Arsitektur',
-        'file' => __DIR__ . '/pages/arsitektur.php',
+        'file' => dirname(__DIR__) . '/pages/arsitektur.php',
     ],
     'unit-kerja' => [
         'title' => 'Unit Kerja',
-        'file' => __DIR__ . '/pages/unit_kerja.php',
+        'file' => dirname(__DIR__) . '/pages/unit_kerja.php',
     ],
     'program' => [
         'title' => 'Program',
-        'file' => __DIR__ . '/pages/program.php',
+        'file' => dirname(__DIR__) . '/pages/program.php',
     ],
     'users' => [
         'title' => 'Pengguna',
-        'file' => __DIR__ . '/pages/users.php',
+        'file' => dirname(__DIR__) . '/pages/users.php',
     ],
     'profile' => [
         'title' => 'Profil',
-        'file' => __DIR__ . '/pages/profile.php',
+        'file' => dirname(__DIR__) . '/pages/profile.php',
     ],
     'audit-trail' => [
         'title' => 'Audit Trail',
-        'file' => __DIR__ . '/pages/audit_trail.php',
+        'file' => dirname(__DIR__) . '/pages/audit_trail.php',
     ],
     'domain-proses-bisnis' => [
         'title' => 'Domain Proses Bisnis',
-        'file' => __DIR__ . '/pages/domain_proses_bisnis.php',
+        'file' => dirname(__DIR__) . '/pages/domain_proses_bisnis.php',
     ],
     'domain-layanan' => [
         'title' => 'Domain Layanan',
-        'file' => __DIR__ . '/pages/domain_layanan.php',
+        'file' => dirname(__DIR__) . '/pages/domain_layanan.php',
     ],
     'domain-data' => [
         'title' => 'Domain Data',
-        'file' => __DIR__ . '/pages/domain_data.php',
+        'file' => dirname(__DIR__) . '/pages/domain_data.php',
     ],
     'domain-aplikasi' => [
         'title' => 'Domain Aplikasi',
-        'file' => __DIR__ . '/pages/domain_aplikasi.php',
+        'file' => dirname(__DIR__) . '/pages/domain_aplikasi.php',
     ],
     'domain-infra-fasilitas-komputasi' => [
         'title' => 'Domain Fasilitas Komputasi',
-        'file' => __DIR__ . '/pages/domain_infra_fasilitas_komputasi.php',
+        'file' => dirname(__DIR__) . '/pages/domain_infra_fasilitas_komputasi.php',
     ],
     'domain-infra-komputasi-awan' => [
         'title' => 'Domain Komputasi Awan',
-        'file' => __DIR__ . '/pages/domain_infra_komputasi_awan.php',
+        'file' => dirname(__DIR__) . '/pages/domain_infra_komputasi_awan.php',
     ],
 ];
 
@@ -99,7 +102,7 @@ function nav_classes(string $target, string $current): string
 
         <aside class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col bg-slate-950 text-white shadow-xl transition-transform duration-200 md:static md:min-h-screen md:translate-x-0 md:shadow-none" data-sidebar>
             <div class="flex items-center justify-between border-b border-white/10 px-6 py-5">
-                <a href="index.php" class="flex items-center gap-3">
+                <a href="contoh-index.php" class="flex items-center gap-3">
                     <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-white text-base font-black text-red-700 ring-1 ring-white/20">SP</span>
                     <span class="block text-lg font-bold leading-6">Arsitektur SPBE</span>
                 </a>
@@ -109,18 +112,18 @@ function nav_classes(string $target, string $current): string
             </div>
 
             <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-4">
-                <a href="index.php?page=dashboard" class="<?= e(nav_classes('dashboard', $navKey)) ?>">
+                <a href="contoh-index.php?page=dashboard" class="<?= e(nav_classes('dashboard', $navKey)) ?>">
                     <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
                     Dashboard
                 </a>
 
                 <div class="pt-4">
                     <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Master</p>
-                    <a href="index.php?page=unit-kerja" class="<?= e(nav_classes('unit-kerja', $navKey)) ?>">
+                    <a href="contoh-index.php?page=unit-kerja" class="<?= e(nav_classes('unit-kerja', $navKey)) ?>">
                         <i data-lucide="building-2" class="h-4 w-4"></i>
                         Unit Kerja
                     </a>
-                    <a href="index.php?page=program" class="<?= e(nav_classes('program', $navKey)) ?>">
+                    <a href="contoh-index.php?page=program" class="<?= e(nav_classes('program', $navKey)) ?>">
                         <i data-lucide="clipboard-list" class="h-4 w-4"></i>
                         Program
                     </a>
@@ -128,27 +131,27 @@ function nav_classes(string $target, string $current): string
 
                 <div class="pt-4">
                     <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Arsitektur</p>
-                    <a href="index.php?page=arsitektur&jenis=RAB" class="<?= e(nav_classes('arsitektur-rab', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAB" class="<?= e(nav_classes('arsitektur-rab', $navKey)) ?>">
                         <i data-lucide="workflow" class="h-4 w-4"></i>
                         Proses Bisnis
                     </a>
-                    <a href="index.php?page=arsitektur&jenis=RAL" class="<?= e(nav_classes('arsitektur-ral', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAL" class="<?= e(nav_classes('arsitektur-ral', $navKey)) ?>">
                         <i data-lucide="handshake" class="h-4 w-4"></i>
                         Layanan
                     </a>
-                    <a href="index.php?page=arsitektur&jenis=RAD" class="<?= e(nav_classes('arsitektur-rad', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAD" class="<?= e(nav_classes('arsitektur-rad', $navKey)) ?>">
                         <i data-lucide="database" class="h-4 w-4"></i>
                         Data
                     </a>
-                    <a href="index.php?page=arsitektur&jenis=RAA" class="<?= e(nav_classes('arsitektur-raa', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAA" class="<?= e(nav_classes('arsitektur-raa', $navKey)) ?>">
                         <i data-lucide="app-window" class="h-4 w-4"></i>
                         Aplikasi
                     </a>
-                    <a href="index.php?page=arsitektur&jenis=RAI" class="<?= e(nav_classes('arsitektur-rai', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAI" class="<?= e(nav_classes('arsitektur-rai', $navKey)) ?>">
                         <i data-lucide="server" class="h-4 w-4"></i>
                         Infrastruktur
                     </a>
-                    <a href="index.php?page=arsitektur&jenis=RAK" class="<?= e(nav_classes('arsitektur-rak', $navKey)) ?>">
+                    <a href="contoh-index.php?page=arsitektur&jenis=RAK" class="<?= e(nav_classes('arsitektur-rak', $navKey)) ?>">
                         <i data-lucide="shield-check" class="h-4 w-4"></i>
                         Keamanan
                     </a>
@@ -156,27 +159,27 @@ function nav_classes(string $target, string $current): string
 
                 <div class="pt-4">
                     <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Domain Arsitektur</p>
-                    <a href="index.php?page=domain-proses-bisnis" class="<?= e(nav_classes('domain-proses-bisnis', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-proses-bisnis" class="<?= e(nav_classes('domain-proses-bisnis', $navKey)) ?>">
                         <i data-lucide="git-branch" class="h-4 w-4"></i>
                         Proses Bisnis
                     </a>
-                    <a href="index.php?page=domain-layanan" class="<?= e(nav_classes('domain-layanan', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-layanan" class="<?= e(nav_classes('domain-layanan', $navKey)) ?>">
                         <i data-lucide="handshake" class="h-4 w-4"></i>
                         Layanan
                     </a>
-                    <a href="index.php?page=domain-data" class="<?= e(nav_classes('domain-data', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-data" class="<?= e(nav_classes('domain-data', $navKey)) ?>">
                         <i data-lucide="database" class="h-4 w-4"></i>
                         Data
                     </a>
-                    <a href="index.php?page=domain-aplikasi" class="<?= e(nav_classes('domain-aplikasi', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-aplikasi" class="<?= e(nav_classes('domain-aplikasi', $navKey)) ?>">
                         <i data-lucide="app-window" class="h-4 w-4"></i>
                         Aplikasi
                     </a>
-                    <a href="index.php?page=domain-infra-fasilitas-komputasi" class="<?= e(nav_classes('domain-infra-fasilitas-komputasi', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-infra-fasilitas-komputasi" class="<?= e(nav_classes('domain-infra-fasilitas-komputasi', $navKey)) ?>">
                         <i data-lucide="server" class="h-4 w-4"></i>
                         Fasilitas Komputasi
                     </a>
-                    <a href="index.php?page=domain-infra-komputasi-awan" class="<?= e(nav_classes('domain-infra-komputasi-awan', $navKey)) ?>">
+                    <a href="contoh-index.php?page=domain-infra-komputasi-awan" class="<?= e(nav_classes('domain-infra-komputasi-awan', $navKey)) ?>">
                         <i data-lucide="cloud" class="h-4 w-4"></i>
                         Komputasi Awan
                     </a>
@@ -184,15 +187,15 @@ function nav_classes(string $target, string $current): string
 
                 <div class="pt-4">
                     <p class="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Akun</p>
-                    <a href="index.php?page=audit-trail" class="<?= e(nav_classes('audit-trail', $navKey)) ?>">
+                    <a href="contoh-index.php?page=audit-trail" class="<?= e(nav_classes('audit-trail', $navKey)) ?>">
                         <i data-lucide="file-clock" class="h-4 w-4"></i>
                         Audit Trail
                     </a>
-                    <a href="index.php?page=users" class="<?= e(nav_classes('users', $navKey)) ?>">
+                    <a href="contoh-index.php?page=users" class="<?= e(nav_classes('users', $navKey)) ?>">
                         <i data-lucide="users" class="h-4 w-4"></i>
                         Pengguna
                     </a>
-                    <a href="index.php?page=profile" class="<?= e(nav_classes('profile', $navKey)) ?>">
+                    <a href="contoh-index.php?page=profile" class="<?= e(nav_classes('profile', $navKey)) ?>">
                         <i data-lucide="user-round" class="h-4 w-4"></i>
                         Profil
                     </a>
@@ -230,11 +233,11 @@ function nav_classes(string $target, string $current): string
                                 <p class="truncate text-sm font-semibold text-slate-900"><?= e((string) $user['name']) ?></p>
                                 <p class="mt-0.5 truncate text-xs text-slate-500">@<?= e((string) $user['username']) ?> - <?= e(role_label((string) $user['role'])) ?></p>
                             </div>
-                            <a href="index.php?page=profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                            <a href="contoh-index.php?page=profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
                                 <i data-lucide="user-round-cog" class="h-4 w-4 text-slate-500"></i>
                                 Profil
                             </a>
-                            <a href="logout.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-700 hover:bg-red-50">
+                            <a href="contoh-logout.php" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-700 hover:bg-red-50">
                                 <i data-lucide="log-out" class="h-4 w-4"></i>
                                 Logout
                             </a>

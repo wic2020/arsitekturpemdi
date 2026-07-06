@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 require_login();
 
 function print_peta_int(mixed $value): ?int
@@ -46,7 +46,7 @@ $stmt = db()->prepare(
 );
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
-$backUrl = 'index.php?' . http_build_query(array_filter([
+$backUrl = '../index.php?' . http_build_query(array_filter([
     'page' => 'peta-rencana',
     'q' => $search,
     'id_skpd' => $filterSkpd,

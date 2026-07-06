@@ -265,7 +265,7 @@ function rab_page_url(int $pageNumber, string $search, int $perPage): string
         <p class="mt-1 text-sm text-slate-500">Kelola struktur referensi proses bisnis pemerintahan hingga level 4.</p>
     </div>
     <div class="flex gap-2">
-        <a href="cetak_referensi.php?jenis=rab" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+        <a href="cetak/cetak_referensi.php?jenis=rab" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
             <i data-lucide="printer" class="h-4 w-4"></i>Cetak
         </a>
         <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-800" data-rab-add>

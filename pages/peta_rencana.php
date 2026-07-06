@@ -279,7 +279,7 @@ $stmt->execute();
 $rows = $stmt->fetchAll();
 $startRow = $totalRows ? $offset + 1 : 0;
 $endRow = min($offset + $perPage, $totalRows);
-$printUrl = 'cetak_peta_rencana.php?' . http_build_query(array_filter([
+$printUrl = 'cetak/cetak_peta_rencana.php?' . http_build_query(array_filter([
     'q' => $search,
     'id_skpd' => $filterSkpd,
     'id_indikator' => $filterIndicator,

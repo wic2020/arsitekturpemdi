@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 require_login();
 
 $configs = [
@@ -270,7 +270,7 @@ function print_dai_column(array $row, array $column): string
 </head>
 <body>
     <div class="toolbar">
-        <a href="index.php?page=<?= e($config['route']) ?>">Kembali</a>
+        <a href="../index.php?page=<?= e($config['route']) ?>">Kembali</a>
         <button type="button" class="primary" onclick="window.print()">Cetak Sekarang</button>
     </div>
 

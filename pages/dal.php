@@ -270,7 +270,7 @@ $programJson = array_map(static fn(array $p): array => [
             <p class="mt-1 text-sm text-slate-500">Kelola layanan, relasi proses bisnis, penanggung jawab, dan unit pelaksana.</p>
         </div>
         <div class="flex gap-2">
-            <a href="cetak_dal.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+            <a href="cetak/cetak_dal.php" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
                 <i data-lucide="printer" class="h-4 w-4"></i>Cetak
             </a>
             <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-800" data-dal-add>

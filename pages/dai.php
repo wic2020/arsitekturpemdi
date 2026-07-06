@@ -20,7 +20,7 @@ $configs = [
         'table' => 'dai_fasilitas_komputasi', 'title' => 'Fasilitas Komputasi', 'icon' => 'server-cog',
         'description' => 'Kelola fasilitas komputasi, kapasitas koneksi, lokasi, dan sistem pengamannya.',
         'name' => 'nama_fasilitas_komputasi', 'multi_network' => true,
-        'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai_fasilitas_komputasi.php',
+        'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai_fasilitas_komputasi.php',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Fasilitas Komputasi', 'field' => 'nama_fasilitas_komputasi'],
@@ -49,7 +49,7 @@ $configs = [
     'dai-komputasi-awan' => [
         'table' => 'dai_komputasi_awan', 'title' => 'Komputasi Awan', 'icon' => 'cloud',
         'description' => 'Kelola layanan komputasi awan, kepemilikan, biaya, dan jaringan pendukung.',
-        'name' => 'nama_cloud', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=komputasi-awan',
+        'name' => 'nama_cloud', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=komputasi-awan',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Cloud', 'field' => 'nama_cloud'],
@@ -76,7 +76,7 @@ $configs = [
     'dai-jaringan-intra' => [
         'table' => 'dai_jaringan_intra', 'title' => 'Jaringan Intra', 'icon' => 'network',
         'description' => 'Kelola jaringan intra, bandwidth, media transmisi, dan unit pengelolanya.',
-        'name' => 'nama_jaringan', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=jaringan-intra',
+        'name' => 'nama_jaringan', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=jaringan-intra',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Jaringan & Deskripsi', 'field' => 'nama_jaringan', 'description' => 'deskripsi'],
@@ -109,7 +109,7 @@ $configs = [
     'dai-software' => [
         'table' => 'dai_software', 'title' => 'Software', 'icon' => 'package',
         'description' => 'Kelola perangkat lunak platform, sistem operasi, serta informasi lisensinya.',
-        'name' => 'nama_perangkat_lunak', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=software',
+        'name' => 'nama_perangkat_lunak', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=software',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Perangkat Lunak & Deskripsi', 'field' => 'nama_perangkat_lunak', 'description' => 'deskripsi'],
@@ -138,7 +138,7 @@ $configs = [
     'dai-hardware-server' => [
         'table' => 'dai_hardware_server', 'title' => 'Hardware Server', 'icon' => 'server',
         'description' => 'Kelola server, kapasitas, lokasi, perangkat lunak, dan infrastruktur pendukungnya.',
-        'name' => 'nama_server', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=hardware-server',
+        'name' => 'nama_server', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=hardware-server',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Server & Deskripsi', 'field' => 'nama_server', 'description' => 'deskripsi'],
@@ -172,7 +172,7 @@ $configs = [
     'dai-hardware-jaringan' => [
         'table' => 'dai_hardware_jaringan', 'title' => 'Hardware Jaringan', 'icon' => 'router',
         'description' => 'Kelola perangkat keras jaringan beserta lokasi dan infrastruktur pendukungnya.',
-        'name' => 'nama_device', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=hardware-jaringan',
+        'name' => 'nama_device', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=hardware-jaringan',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Device & Deskripsi', 'field' => 'nama_device', 'description' => 'deskripsi'],
@@ -198,7 +198,7 @@ $configs = [
     'dai-hardware-periferal' => [
         'table' => 'dai_hardware_periferal', 'title' => 'Hardware Periferal', 'icon' => 'printer',
         'description' => 'Kelola periferal dan keterhubungannya dengan server, storage, serta jaringan.',
-        'name' => 'nama_periferal', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=hardware-periferal',
+        'name' => 'nama_periferal', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=hardware-periferal',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Periferal & Deskripsi', 'field' => 'nama_periferal', 'description' => 'deskripsi'],
@@ -224,7 +224,7 @@ $configs = [
     'dai-hardware-storage' => [
         'table' => 'dai_hardware_storage', 'title' => 'Hardware Storage', 'icon' => 'hard-drive',
         'description' => 'Kelola media penyimpanan, kapasitas, metode akses, dan data yang disimpan.',
-        'name' => 'nama_storage', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=hardware-storage',
+        'name' => 'nama_storage', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=hardware-storage',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Storage & Deskripsi', 'field' => 'nama_storage', 'description' => 'deskripsi'],
@@ -253,7 +253,7 @@ $configs = [
     'dai-hardware-keamanan' => [
         'table' => 'dai_hardware_keamanan', 'title' => 'Hardware Keamanan', 'icon' => 'shield',
         'description' => 'Kelola perangkat keras keamanan dan penempatannya pada infrastruktur.',
-        'name' => 'nama_device', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=hardware-keamanan',
+        'name' => 'nama_device', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=hardware-keamanan',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama Device & Deskripsi', 'field' => 'nama_device', 'description' => 'deskripsi'],
@@ -279,7 +279,7 @@ $configs = [
     'dai-splp' => [
         'table' => 'dai_splp', 'title' => 'SPLP', 'icon' => 'share-2',
         'description' => 'Kelola Sistem Penghubung Layanan Pemerintah, jaringan, data, dan aplikasi terkait.',
-        'name' => 'nama_splp', 'order_by' => 'd.id ASC', 'print_url' => 'cetak_dai.php?type=splp',
+        'name' => 'nama_splp', 'order_by' => 'd.id ASC', 'print_url' => 'cetak/cetak_dai.php?type=splp',
         'columns' => [
             ['label' => 'Kode', 'type' => 'code'],
             ['label' => 'Nama SPLP', 'field' => 'nama_splp'],

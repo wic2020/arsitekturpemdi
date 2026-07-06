@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
+require_once dirname(__DIR__) . '/includes/config.php';
 
 $user = current_user();
 
@@ -8,4 +8,4 @@ if ($user) {
 }
 
 logout_user();
-redirect('login.php');
+redirect('contoh-login.php');
