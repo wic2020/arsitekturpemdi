@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Contoh Desain Terbaru - Arsitektur SPBE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-900">
+    <div class="min-h-screen md:flex">
+        <div class="fixed inset-0 z-30 hidden bg-slate-900/50 md:hidden" data-sidebar-overlay></div>
+
+        <aside class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-slate-950 text-white shadow-xl transition-transform duration-200 md:sticky md:top-0 md:h-screen md:translate-x-0 md:shadow-none" data-sidebar>
+            <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                <a href="#" class="flex items-center gap-3">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white text-sm font-black text-red-700 ring-1 ring-white/20">SP</span>
+                    <span class="block text-base font-bold leading-5">Arsitektur SPBE</span>
+                </a>
+                <button type="button" class="icon-button text-slate-300 hover:bg-white/10 md:hidden" data-sidebar-close aria-label="Tutup menu"><i data-lucide="x"></i></button>
+            </div>
+
+            <nav class="sidebar-scroll flex-1 space-y-0.5 overflow-y-auto px-3 py-3">
+                <a href="#" class="nav-link"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+
+                <div class="pt-3">
+                    <p class="nav-heading">Referensi Arsitektur</p>
+                    <a href="#" class="nav-link"><i data-lucide="workflow"></i>Proses Bisnis</a>
+                    <a href="#" class="nav-link"><i data-lucide="handshake"></i>Layanan</a>
+                    <a href="#" class="nav-link"><i data-lucide="database"></i>Data</a>
+                    <a href="#" class="nav-link"><i data-lucide="app-window"></i>Aplikasi</a>
+                    <a href="#" class="nav-link"><i data-lucide="server"></i>Infrastruktur</a>
+                    <a href="#" class="nav-link"><i data-lucide="shield-check"></i>Keamanan</a>
+                </div>
+
+                <div class="pt-3">
+                    <p class="nav-heading">Domain Arsitektur</p>
+                    <a href="#" class="nav-link"><i data-lucide="git-branch"></i>Bisnis</a>
+                    <a href="#" class="nav-link"><i data-lucide="handshake"></i>Layanan</a>
+                    <a href="#" class="nav-link"><i data-lucide="database"></i>Data</a>
+                    <a href="#" class="nav-link"><i data-lucide="app-window"></i>Aplikasi</a>
+                    <details>
+                        <summary class="nav-summary"><i data-lucide="server"></i><span class="flex-1">Infrastruktur</span><i data-lucide="chevron-right" class="summary-chevron"></i></summary>
+                        <div class="ml-4 space-y-0.5 border-l border-white/10 pl-2">
+                            <a href="#" class="nav-link text-xs"><i data-lucide="server-cog"></i>Fasilitas Komputasi</a>
+                            <a href="#" class="nav-link text-xs"><i data-lucide="cloud"></i>Komputasi Awan</a>
+                            <a href="#" class="nav-link text-xs"><i data-lucide="network"></i>Jaringan Intra</a>
+                            <a href="#" class="nav-link text-xs"><i data-lucide="package"></i>Software</a>
+                        </div>
+                    </details>
+                    <details>
+                        <summary class="nav-summary"><i data-lucide="shield-check"></i><span class="flex-1">Keamanan</span><i data-lucide="chevron-right" class="summary-chevron"></i></summary>
+                        <div class="ml-4 space-y-0.5 border-l border-white/10 pl-2">
+                            <a href="#" class="nav-link text-xs"><i data-lucide="scan-search"></i>Audit Keamanan</a>
+                            <a href="#" class="nav-link text-xs"><i data-lucide="book-check"></i>Standar Keamanan</a>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="pt-3">
+                    <p class="nav-heading">Peta Rencana</p>
+                    <a href="#" class="nav-link"><i data-lucide="layers-3"></i>Aspek</a>
+                    <a href="#" class="nav-link"><i data-lucide="list-checks"></i>Indikator</a>
+                    <a href="#" class="nav-link"><i data-lucide="map"></i>Peta Rencana</a>
+                    <a href="#" class="nav-link"><i data-lucide="list-ordered"></i>Level PEMDI</a>
+                    <a href="#" class="nav-link active"><i data-lucide="file-check-2"></i>Evidence</a>
+                </div>
+
+                <div class="pt-3">
+                    <p class="nav-heading">Akun</p>
+                    <a href="#" class="nav-link"><i data-lucide="user-round"></i>Profil Saya</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="flex min-w-0 flex-1 flex-col">
+            <header class="border-b border-slate-200 bg-white px-4 py-4 shadow-sm sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <button type="button" class="icon-button shrink-0 border border-slate-200 text-slate-700 md:hidden" data-sidebar-open aria-label="Buka menu"><i data-lucide="menu"></i></button>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-slate-500">Sistem Informasi</p>
+                            <p class="truncate text-base font-semibold">Sistem Informasi Arsitektur SPBE</p>
+                        </div>
+                    </div>
+                    <div class="relative shrink-0" data-user-menu>
+                        <button type="button" class="flex items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-left text-sm shadow-sm hover:bg-slate-50" data-user-menu-button aria-expanded="false">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-white"><i data-lucide="user-round" class="h-4 w-4"></i></span>
+                            <span class="hidden sm:block"><b class="block">Administrator</b><small class="uppercase text-slate-500">Admin</small></span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </button>
+                        <div class="absolute right-0 z-30 mt-2 hidden w-60 overflow-hidden rounded-md border border-slate-200 bg-white py-2 shadow-lg" data-user-menu-dropdown>
+                            <div class="border-b px-4 py-3"><b class="block">Administrator</b><small class="text-slate-500">admin@superapp.test</small></div>
+                            <a href="#" class="menu-link"><i data-lucide="user-round-cog"></i>Profil Saya</a>
+                            <a href="#" class="menu-link text-red-700 hover:bg-red-50"><i data-lucide="log-out"></i>Keluar</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="flex-1 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+                <div class="space-y-5">
+                    <div class="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-red-700">Peta Rencana</p>
+                            <h1 class="mt-1 text-xl font-bold">PEMDI Evidence</h1>
+                            <p class="mt-1 text-sm text-slate-500">Kelola dokumen evidence, skor, dan status unggah untuk setiap level indikator.</p>
+                        </div>
+                        <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-800" data-open-form><i data-lucide="plus" class="h-4 w-4"></i>Tambah Evidence</button>
+                    </div>
+
+                    <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+                        <div class="flex flex-col gap-3 border-b border-slate-200 p-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div>
+                                <h2 class="font-semibold">Daftar Evidence</h2>
+                                <p class="mt-1 text-sm text-slate-500">2 dokumen.</p>
+                            </div>
+                            <form class="flex flex-col gap-2 sm:flex-row">
+                                <div class="relative">
+                                    <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+                                    <input type="search" placeholder="Cari dokumen atau indikator..." class="control pl-9 sm:w-64">
+                                </div>
+                                <select class="control sm:w-56"><option>Semua Indikator</option><option>Indeks Layanan Digital</option><option>Indeks Keamanan Informasi</option></select>
+                                <select class="control sm:w-28"><option>20 data</option><option>10 data</option><option>50 data</option></select>
+                                <button type="button" class="rounded-md border border-slate-300 px-3 py-2 text-xs font-semibold hover:bg-slate-50">Tampilkan</button>
+                                <button type="button" class="icon-button text-red-700 hover:bg-red-50" title="Reset filter"><i data-lucide="rotate-ccw"></i></button>
+                            </form>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+                                <thead class="bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500">
+                                    <tr><th class="px-3 py-3">No</th><th class="px-3 py-3">Dokumen</th><th class="px-3 py-3">Indikator - Level</th><th class="px-3 py-3">Skor</th><th class="px-3 py-3">Status</th><th class="px-3 py-3">File</th><th class="px-3 py-3 text-right">Aksi</th></tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr class="align-top hover:bg-slate-50/70">
+                                        <td class="px-3 py-3 text-slate-500">1</td>
+                                        <td class="max-w-[260px] whitespace-normal px-3 py-3 font-semibold">Dokumen Evaluasi Layanan Digital</td>
+                                        <td class="max-w-[300px] whitespace-normal px-3 py-3"><p class="font-semibold">Indeks Layanan Digital - Level 3</p><p class="mt-1 text-[11px] text-slate-500">Layanan Publik Berbasis Elektronik</p></td>
+                                        <td class="px-3 py-3 font-semibold">82,50</td>
+                                        <td class="px-3 py-3"><span class="status uploaded">Sudah Diunggah</span></td>
+                                        <td class="px-3 py-3"><button type="button" class="icon-button border border-blue-200 bg-blue-50 text-blue-700" title="Unduh PDF"><i data-lucide="download"></i></button></td>
+                                        <td class="px-3 py-3"><div class="flex justify-end gap-1.5"><button class="action-button" data-open-view title="Lihat"><i data-lucide="eye"></i></button><button class="action-button border-blue-200 bg-blue-50 text-blue-700" data-open-form title="Edit"><i data-lucide="pencil"></i></button><button class="action-button border-red-200 bg-red-50 text-red-700" data-open-delete title="Hapus"><i data-lucide="trash-2"></i></button></div></td>
+                                    </tr>
+                                    <tr class="align-top hover:bg-slate-50/70">
+                                        <td class="px-3 py-3 text-slate-500">2</td>
+                                        <td class="max-w-[260px] whitespace-normal px-3 py-3 font-semibold">Laporan Audit Keamanan Informasi</td>
+                                        <td class="max-w-[300px] whitespace-normal px-3 py-3"><p class="font-semibold">Indeks Keamanan Informasi - Level 2</p><p class="mt-1 text-[11px] text-slate-500">Keamanan SPBE</p></td>
+                                        <td class="px-3 py-3 font-semibold">65,75</td>
+                                        <td class="px-3 py-3"><span class="status pending">Belum Diunggah</span></td>
+                                        <td class="px-3 py-3 text-slate-400">-</td>
+                                        <td class="px-3 py-3"><div class="flex justify-end gap-1.5"><button class="action-button" data-open-view title="Lihat"><i data-lucide="eye"></i></button><button class="action-button border-blue-200 bg-blue-50 text-blue-700" data-open-form title="Edit"><i data-lucide="pencil"></i></button><button class="action-button border-red-200 bg-red-50 text-red-700" data-open-delete title="Hapus"><i data-lucide="trash-2"></i></button></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 p-4 text-sm text-slate-500">
+                            <p>Menampilkan 1-2 dari 2 data</p>
+                            <nav class="flex items-center gap-1" aria-label="Navigasi halaman">
+                                <button class="page-button disabled" aria-label="Halaman pertama" disabled><i data-lucide="chevrons-left"></i></button>
+                                <button class="page-button active" aria-current="page">1</button>
+                                <button class="page-button disabled" aria-label="Halaman terakhir" disabled><i data-lucide="chevrons-right"></i></button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="border-t border-slate-200 bg-white px-4 py-4 text-sm text-slate-500 sm:px-6 lg:px-8">
+                <div class="flex flex-col gap-2 sm:flex-row sm:justify-between"><p>&copy; 2026 Sistem Informasi Arsitektur SPBE.</p><p class="text-xs">Pengelolaan arsitektur dan peta rencana SPBE</p></div>
+            </footer>
+        </main>
+    </div>
+
+    <div class="modal" data-modal="form">
+        <form class="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
+            <header class="flex items-center justify-between border-b px-5 py-4">
+                <div class="flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-700 text-white"><i data-lucide="file-check-2"></i></span><div><h2 class="font-bold">Tambah Evidence</h2><p class="text-xs text-slate-500">PDF maksimal 10 MB.</p></div></div>
+                <button type="button" class="icon-button" data-close-modal aria-label="Tutup"><i data-lucide="x"></i></button>
+            </header>
+            <div class="grid flex-1 gap-4 overflow-y-auto bg-slate-50 p-5 md:grid-cols-2">
+                <label class="md:col-span-2"><span class="form-label">Indikator - Level</span><select class="form-control"><option>Pilih Indikator - Level</option><option>Indeks Layanan Digital - Level 3</option><option>Indeks Keamanan Informasi - Level 2</option></select></label>
+                <label class="md:col-span-2"><span class="form-label">Nama Dokumen</span><input class="form-control" value="Dokumen Evaluasi Layanan Digital"></label>
+                <label><span class="form-label">Skor</span><input type="number" min="0" max="100" step="0.01" class="form-control" value="82.50"></label>
+                <label><span class="form-label">File PDF</span><input type="file" accept=".pdf,application/pdf" class="mt-2 block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-2 file:text-xs file:font-semibold"></label>
+            </div>
+            <footer class="flex justify-end gap-2 border-t px-5 py-3"><button type="button" class="rounded-lg border px-4 py-2 text-sm font-semibold" data-close-modal>Batal</button><button type="button" class="rounded-lg bg-red-700 px-5 py-2 text-sm font-semibold text-white" data-close-modal>Simpan Evidence</button></footer>
+        </form>
+    </div>
+
+    <div class="modal" data-modal="view">
+        <div class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl">
+            <header class="flex items-center justify-between border-b p-4"><h2 class="font-bold">Detail Evidence</h2><button type="button" class="icon-button" data-close-modal><i data-lucide="x"></i></button></header>
+            <div class="grid gap-3 overflow-y-auto bg-slate-50 p-5 md:grid-cols-2">
+                <div class="detail md:col-span-2"><b>Nama Dokumen</b><p>Dokumen Evaluasi Layanan Digital</p></div>
+                <div class="detail md:col-span-2"><b>Indikator - Level</b><p>Indeks Layanan Digital - Level 3</p></div>
+                <div class="detail"><b>Skor</b><p>82,50</p></div>
+                <div class="detail"><b>Status Upload</b><p>Sudah Diunggah</p></div>
+                <div class="detail md:col-span-2"><b>Kriteria</b><p>Implementasi layanan digital telah terintegrasi dan dievaluasi secara berkala.</p></div>
+                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 font-semibold text-blue-700 md:col-span-2"><i data-lucide="download"></i>Unduh PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" data-modal="delete">
+        <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-2xl">
+            <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-red-50 text-red-700"><i data-lucide="trash-2"></i></span>
+            <h2 class="mt-4 text-xl font-bold">Hapus Evidence?</h2>
+            <p class="mt-2 text-sm text-slate-500">Data dan PDF terkait akan dihapus permanen.</p>
+            <p class="mt-4 rounded-lg bg-slate-50 p-4 font-semibold">Dokumen Evaluasi Layanan Digital</p>
+            <div class="mt-5 flex justify-end gap-2"><button class="rounded-lg border px-4 py-2" data-close-modal>Batal</button><button class="rounded-lg bg-red-700 px-4 py-2 font-semibold text-white" data-close-modal>Ya, Hapus</button></div>
+        </div>
+    </div>
+
+    <style>
+        .sidebar-scroll{scrollbar-width:thin;scrollbar-color:transparent transparent}.sidebar-scroll:hover{scrollbar-color:#475569 transparent}
+        .nav-heading{padding:0 .625rem .375rem;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0;color:#64748b}
+        .nav-link,.nav-summary{display:flex;align-items:center;gap:.625rem;white-space:nowrap;border-radius:.375rem;padding:.5rem .625rem;font-size:13px;font-weight:500;color:#cbd5e1;transition:.15s}
+        .nav-link:hover,.nav-summary:hover{background:rgb(255 255 255/.1);color:#fff}.nav-link.active{background:#b91c1c;color:#fff;box-shadow:0 1px 2px rgb(0 0 0/.15)}
+        .nav-link svg,.nav-summary svg,.menu-link svg,.action-button svg,.icon-button svg,.page-button svg{width:1rem;height:1rem;flex:none}.nav-summary{cursor:pointer;list-style:none}.nav-summary::-webkit-details-marker{display:none}details[open] .summary-chevron{transform:rotate(90deg)}
+        .menu-link{display:flex;align-items:center;gap:.75rem;padding:.625rem 1rem;font-size:.875rem}.menu-link:hover{background:#f8fafc}
+        .icon-button{display:inline-flex;height:2.25rem;width:2.25rem;align-items:center;justify-content:center;border-radius:.375rem}
+        .control{height:2.25rem;border:1px solid #cbd5e1;border-radius:.375rem;background:#fff;padding:.45rem .7rem;font-size:.75rem;outline:none}.control:focus,.form-control:focus{border-color:#dc2626;box-shadow:0 0 0 3px rgb(254 226 226/.75)}
+        .action-button{display:inline-flex;width:2rem;height:2rem;align-items:center;justify-content:center;border-width:1px;border-radius:.375rem}
+        .status{display:inline-flex;border-radius:999px;padding:.25rem .5rem;font-size:11px;font-weight:600}.status.uploaded{background:#d1fae5;color:#047857}.status.pending{background:#f1f5f9;color:#475569}
+        .page-button{display:inline-flex;height:2rem;min-width:2rem;align-items:center;justify-content:center;border:1px solid #cbd5e1;border-radius:.375rem;background:#fff;padding:0 .5rem;font-size:.75rem;font-weight:600}.page-button.active{border-color:#1d4ed8;background:#1d4ed8;color:#fff}.page-button.disabled{cursor:not-allowed;border-color:#e2e8f0;background:#f8fafc;color:#cbd5e1}
+        .modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgb(2 6 23/.72);padding:1rem}.modal.open{display:flex}
+        .form-label{display:block;margin-bottom:.3rem;font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b}.form-control{width:100%;border:1px solid #cbd5e1;border-radius:.5rem;background:#fff;padding:.625rem .75rem;font-size:.875rem;outline:none}
+        .detail{border:1px solid #e2e8f0;border-radius:.5rem;background:#fff;padding:1rem}.detail b{font-size:.7rem;text-transform:uppercase;color:#64748b}.detail p{margin-top:.4rem;font-size:.875rem}
+    </style>
+
+    <script>
+        lucide.createIcons();
+        const sidebar=document.querySelector('[data-sidebar]'),overlay=document.querySelector('[data-sidebar-overlay]');
+        const closeSidebar=()=>{sidebar.classList.add('-translate-x-full');overlay.classList.add('hidden')};
+        document.querySelector('[data-sidebar-open]')?.addEventListener('click',()=>{sidebar.classList.remove('-translate-x-full');overlay.classList.remove('hidden')});
+        document.querySelector('[data-sidebar-close]')?.addEventListener('click',closeSidebar);overlay?.addEventListener('click',closeSidebar);
+        const menu=document.querySelector('[data-user-menu]'),dropdown=document.querySelector('[data-user-menu-dropdown]'),menuButton=document.querySelector('[data-user-menu-button]');
+        menuButton?.addEventListener('click',()=>{dropdown.classList.toggle('hidden');menuButton.setAttribute('aria-expanded',String(!dropdown.classList.contains('hidden')))});
+        document.addEventListener('click',event=>{if(menu&&!menu.contains(event.target)){dropdown.classList.add('hidden');menuButton?.setAttribute('aria-expanded','false')}});
+        const openModal=name=>document.querySelector(`[data-modal="${name}"]`)?.classList.add('open');
+        document.querySelectorAll('[data-open-form]').forEach(button=>button.addEventListener('click',()=>openModal('form')));
+        document.querySelectorAll('[data-open-view]').forEach(button=>button.addEventListener('click',()=>openModal('view')));
+        document.querySelectorAll('[data-open-delete]').forEach(button=>button.addEventListener('click',()=>openModal('delete')));
+        document.querySelectorAll('[data-close-modal]').forEach(button=>button.addEventListener('click',()=>button.closest('[data-modal]').classList.remove('open')));
+        document.querySelectorAll('[data-modal]').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)modal.classList.remove('open')}));
+        document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('[data-modal]').forEach(modal=>modal.classList.remove('open'));closeSidebar()}});
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Runtime sessions and logs
+.tmp/
+*.log
+
+# User-uploaded evidence
+uploads/pemdi_evidence/*
+!uploads/pemdi_evidence/.htaccess
+
+# Local database backups (database/*.sql migrations remain tracked)
+backups/
+*.sql.gz
+*.dump
+*.bak
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

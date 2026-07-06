@@ -1,0 +1,62 @@
+CREATE TABLE IF NOT EXISTS aspek (
+    id INT NOT NULL AUTO_INCREMENT,
+    nama_aspek VARCHAR(255) NOT NULL,
+    created_by BIGINT UNSIGNED NULL,
+    updated_by BIGINT UNSIGNED NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_aspek_nama (nama_aspek),
+    CONSTRAINT fk_aspek_created_by FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_aspek_updated_by FOREIGN KEY (updated_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS indikator (
+    id INT NOT NULL AUTO_INCREMENT,
+    nama_indikator VARCHAR(500) NOT NULL,
+    id_aspek INT NOT NULL,
+    created_by BIGINT UNSIGNED NULL,
+    updated_by BIGINT UNSIGNED NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_indikator_aspek_nama (id_aspek, nama_indikator),
+    KEY idx_indikator_aspek (id_aspek),
+    CONSTRAINT fk_indikator_aspek FOREIGN KEY (id_aspek) REFERENCES aspek (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_indikator_created_by FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_indikator_updated_by FOREIGN KEY (updated_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS peta_rencana (
+    id INT NOT NULL AUTO_INCREMENT,
+    id_aspek INT NOT NULL,
+    no_urut INT NOT NULL,
+    nama_rencana VARCHAR(500) NOT NULL,
+    id_indikator INT NOT NULL,
+    target_2026 TEXT NULL,
+    target_2027 TEXT NULL,
+    target_2028 TEXT NULL,
+    target_2029 TEXT NULL,
+    target_2030 TEXT NULL,
+    tanggal_awal DATE NULL,
+    tanggal_akhir DATE NULL,
+    id_skpd INT NOT NULL,
+    id_program INT NOT NULL,
+    keterangan TEXT NULL,
+    created_by BIGINT UNSIGNED NULL,
+    updated_by BIGINT UNSIGNED NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_peta_rencana_aspek (id_aspek),
+    KEY idx_peta_rencana_indikator (id_indikator),
+    KEY idx_peta_rencana_skpd (id_skpd),
+    KEY idx_peta_rencana_program (id_program),
+    KEY idx_peta_rencana_urutan (no_urut),
+    CONSTRAINT fk_peta_rencana_aspek FOREIGN KEY (id_aspek) REFERENCES aspek (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_peta_rencana_indikator FOREIGN KEY (id_indikator) REFERENCES indikator (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_peta_rencana_skpd FOREIGN KEY (id_skpd) REFERENCES skpd (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_peta_rencana_program FOREIGN KEY (id_program) REFERENCES program (id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_peta_rencana_created_by FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_peta_rencana_updated_by FOREIGN KEY (updated_by) REFERENCES users (id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
